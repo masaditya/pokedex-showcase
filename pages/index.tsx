@@ -1,32 +1,27 @@
 import type { NextPage } from "next";
-import Image from "next/image";
-import styles from "../styles/Home.module.css";
 import { PokemonStateFn } from "internal/pokemon/state";
-import { URLParserId } from "utils/parser";
+import { PokemonCard } from "components/Card/PokemonCard";
+import { Spinner } from "components/Common/Spinner";
 
 const Home: NextPage = () => {
   const pokemonState = PokemonStateFn();
 
   return (
     <div
-      className={styles.container}
+      className="p-4 bg-black overflow-auto h-screen"
       onScroll={pokemonState.onScroll}
       ref={pokemonState.listInnerRef}
     >
-      <div>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {pokemonState.data.map((item, key) => (
-          <div key={key}>
-            <Image
-              width={150}
-              height={150}
-              src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${URLParserId(
-                item.url
-              )}.png`}
-            />
-            <p>{item.name}</p>
-          </div>
+          <PokemonCard key={key} name={item.name} url={item.url} />
         ))}
       </div>
+      {pokemonState.loading && (
+        <div className="absolute bottom-6 left-1/2 right-1/2 m-auto">
+          <Spinner />
+        </div>
+      )}
     </div>
   );
 };
